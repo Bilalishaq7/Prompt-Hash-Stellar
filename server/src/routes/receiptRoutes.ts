@@ -5,6 +5,7 @@ import {
   CreateReceiptParams,
 } from "../services/signedReceiptService";
 import { CriticalOperationType } from "../models/SignedReceipt";
+import { requireIdempotency } from "../middleware/idempotency";
 
 export const receiptRouter = express.Router();
 
@@ -121,7 +122,7 @@ receiptRouter.get("/", async (req: Request, res: Response) => {
  * POST /api/receipts
  * Generate a new signed activity receipt.
  */
-receiptRouter.post("/", async (req: Request, res: Response) => {
+receiptRouter.post("/", requireIdempotency, async (req: Request, res: Response) => {
   const { operationType, actor, status, payload, externalReferences } = req.body;
 
   if (!operationType || !actor || !status || !payload) {

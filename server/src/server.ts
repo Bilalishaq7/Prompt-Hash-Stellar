@@ -150,5 +150,6 @@ app.listen(port, () => {
   startIndexer().catch((err) => {
     console.error("Failed to start Soroban Indexer:", err);
   });
+});
 
 export default app;

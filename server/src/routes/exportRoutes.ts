@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import connectDb from "../db/connectDb";
 import { authLimiter } from "../middleware/rateLimiter";
 import { requireAdminScope, AdminRequest } from "../middleware/adminAuth";
+import { requireIdempotency } from "../middleware/idempotency";
 import {
   runUserExport,
   listUserExports,
@@ -71,6 +72,7 @@ exportRouter.get(
 exportRouter.post(
   "/",
   authLimiter,
+  requireIdempotency,
   async (req: Request, res: Response) => {
     try {
       await connectDb();
