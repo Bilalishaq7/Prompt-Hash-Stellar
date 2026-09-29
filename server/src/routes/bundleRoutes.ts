@@ -90,7 +90,7 @@ bundleRouter.post("/", requireIdempotency, async (req: Request, res: Response) =
 bundleRouter.post("/:id/purchase", purchaseLimiter, requireIdempotency, async (req: Request, res: Response) => {
   try {
     await connectDb();
-    const bundleId = req.params.id;
+    const bundleId = String(req.params.id);
     const { buyerAddress, txHash, pricePaid } = req.body;
 
     if (!buyerAddress || !txHash) {
@@ -121,7 +121,7 @@ bundleRouter.post("/:id/purchase", purchaseLimiter, requireIdempotency, async (r
 bundleRouter.post("/purchases/:purchaseId/recover", requireIdempotency, async (req: Request, res: Response) => {
   try {
     await connectDb();
-    const { purchaseId } = req.params;
+    const purchaseId = String(req.params.purchaseId);
     const { buyerAddress } = req.body;
 
     if (!buyerAddress) {

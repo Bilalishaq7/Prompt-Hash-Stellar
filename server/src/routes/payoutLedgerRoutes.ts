@@ -20,7 +20,7 @@ payoutLedgerRouter.get(
   async (req: Request, res: Response) => {
     try {
       await connectDb();
-      const { walletAddress } = req.params;
+      const walletAddress = String(req.params.walletAddress);
       if (!walletAddress) {
         return res.status(400).json({ error: "walletAddress is required" });
       }

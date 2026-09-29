@@ -1,5 +1,5 @@
 import connectDb from "../db/connectDb";
-import ExportRecord from "../models/ExportRecord";
+import { ExportRecord, type IExportRecord } from "../models/ExportRecord";
 import Prompt from "../models/Prompt";
 import User from "../models/User";
 import { hashWalletAddress } from "../services/auditTrail";

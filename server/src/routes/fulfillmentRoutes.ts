@@ -89,7 +89,8 @@ fulfillmentRouter.get(
   "/:promptId/:buyerWallet",
   async (req: Request, res: Response) => {
     markPrivate(res);
-    const { promptId, buyerWallet } = req.params;
+    const promptId = String(req.params.promptId);
+    const buyerWallet = String(req.params.buyerWallet);
     const record = await FulfillmentRecord.findOne({
       promptId,
       buyerWallet: buyerWallet.toLowerCase(),
@@ -195,7 +196,8 @@ fulfillmentRouter.post(
   "/:promptId/:buyerWallet/request-refund",
   requireIdempotency,
   async (req: Request, res: Response) => {
-    const { promptId, buyerWallet } = req.params;
+    const promptId = String(req.params.promptId);
+    const buyerWallet = String(req.params.buyerWallet);
     const { reason, disputeTxHash } = req.body as {
       reason: string;
       disputeTxHash?: string;
