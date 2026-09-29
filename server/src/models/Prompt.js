@@ -3,6 +3,18 @@ import { PROMPT_CATEGORIES, PROMPT_METADATA_LIMITS } from "@prompthash/schema";
 
 const promptSchema = new mongoose.Schema(
   {
+    /**
+     * Record-level schema version for read-path compatibility transforms.
+     * See server/src/services/schemaVersioning.ts.
+     *   0 / absent — pre-migration record; transform applies v0→current fills.
+     *   1           — first versioned write; lifecycle fields may be absent.
+     *   2           — current; lifecycleState guaranteed present on write.
+     */
+    schemaVersion: {
+      type: Number,
+      default: 2,
+      min: 0,
+    },
     image: {
       type: String,
       required: true,
