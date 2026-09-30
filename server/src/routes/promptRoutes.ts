@@ -74,6 +74,20 @@ promptRouter.get("/creator/:walletAddress/analytics", GetCreatorSalesAnalytics);
 promptRouter.get("/creator/:walletAddress/payout-statement", GetCreatorPayoutStatement);
 promptRouter.get("/creator/:walletAddress/drafts", GetDraftPrompts);
 
+// ── Safe Public Permalinks (#936) ───────────────────────────────────────────
+// Canonical permalink resolution, redirect handling for renamed records, and
+// safe public views for archived/restricted records.
+promptRouter.get("/permalink/:identifier", ResolvePromptPermalink);
+promptRouter.get("/resolve/:identifier", ResolvePromptPermalink);
+promptRouter.post("/:promptId/rename", RenamePromptRecord);
+promptRouter.post("/:promptId/archive-permalink", ArchivePromptRecord);
+promptRouter.post("/:promptId/restore-permalink", RestorePromptRecord);
+promptRouter.post(
+  "/:promptId/restrict-permalink",
+  requireAdminScope("moderation:write"),
+  RestrictPromptRecord
+);
+
 // Content hash lookup for duplicate detection (#333)
 promptRouter.get("/hash/:contentHash", GetPromptsByContentHash);
 
