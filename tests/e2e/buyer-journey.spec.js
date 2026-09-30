@@ -46,7 +46,7 @@ test.describe('Buyer path E2E — settlement → entitlement → unlock', () => 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Marketplace is reachable — catalog may be empty or populated, we just verify shell
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
     // Unlock flow is primarily tested via mocked API: directly exercise unlock client by
     // navigating to a prompt detail that would call unlock — we simulate via fetch
     const challengeOk = await page.evaluate(async () => {
@@ -92,13 +92,13 @@ test.describe('Buyer path E2E — settlement → entitlement → unlock', () => 
     expect(err).toMatch(/declined/i);
     // App should surface retry UI — if PromptModal is rendered, verify recovery copy
     // Fallback: ensure page did not crash
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test('settlement failure (insufficient balance) keeps entitlement unavailable and shows actionable error', async ({ page }) => {
     await injectWallet(page, BUYER_ADDRESS);
     await page.route('**/api/auth/challenge', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: 't', challenge: 'c', expiresAt: Date.now() + 300000, nonce: 'n' }) });
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: 't', challenge: 'c', expiresAt: 2000000000000, nonce: 'n-803' }) });
     });
     await page.route('**/api/prompts/unlock', async (route) => {
       await route.fulfill({ status: 402, contentType: 'application/json', body: JSON.stringify({ error: 'Insufficient XLM balance to cover purchase + fee.', code: 'INSUFFICIENT_BALANCE' }) });
@@ -176,7 +176,7 @@ test.describe('Buyer path E2E — settlement → entitlement → unlock', () => 
     await injectWallet(page, BUYER_ADDRESS);
     let call = 0;
     await page.route('**/api/auth/challenge', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: `t-${call}`, challenge: 'c', expiresAt: Date.now() + 300000, nonce: `n-${call}` }) });
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: `t-${call}`, challenge: 'c', expiresAt: 2000000000000, nonce: `n-803-${call}` }) });
     });
     await page.route('**/api/prompts/unlock', async (route) => {
       call += 1;
