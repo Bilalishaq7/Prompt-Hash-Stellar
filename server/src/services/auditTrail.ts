@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { AUDIT_ACTIONS, AuditLog, AuditAction, AuditResult } from "../models/AuditLog";
 import { logger } from "./structuredLogger";
+import { MaintenanceScope } from "../models/MaintenanceBanner";
 export { logger };
 
 /**
@@ -11,6 +12,7 @@ export { logger };
 export const AUDIT_INTEGRITY_VERSION = 2;
 
 const GENESIS_HASH = "0".repeat(64);
+const MAINTENANCE_TARGET_TYPE = "maintenance_banner";
 
 /**
  * Deterministic JSON serialization: object keys are sorted recursively and
@@ -163,7 +165,10 @@ export interface AuditEventParams {
  * Fire-and-forget: DB errors are caught and logged to stderr; they never
  * propagate so a storage hiccup cannot block a legitimate unlock.
  */
-export async function recordAuditEvent(params: AuditEventParams): Promise<void> {
+export async function recordAuditEvent(
+  params: AuditEventParams,
+  options: { throwOnError?: boolean } = {},
+): Promise<void> {
   const walletHash = params.walletAddress
     ? hashWalletAddress(params.walletAddress)
     : null;
@@ -240,6 +245,7 @@ export async function recordAuditEvent(params: AuditEventParams): Promise<void> 
       requestId: params.requestId ?? undefined,
       err: err instanceof Error ? err.message : String(err),
     });
+    if (options.throwOnError) throw err;
   }
 }
 
@@ -856,5 +862,56 @@ export async function exportAccessAuditLogs(
     contentType: "application/json",
     data: JSON.stringify(records, null, 2),
   };
+}
+
+/**
+ * Record a maintenance banner configuration change (enable, disable, or
+ * update) in the immutable audit trail. Only authorized actors reach this
+ * function; the caller is responsible for authorization checks.
+ */
+export async function recordMaintenanceChange(params: {
+  actor: string;
+  bannerId: string;
+  scopes: MaintenanceScope[];
+  beforeState?: Record<string, unknown> | null;
+  afterState?: Record<string, unknown> | null;
+  reason?: string | null;
+  requestId?: string | null;
+  clientIp?: string | null;
+}): Promise<void> {
+  await recordAccessOrOwnershipChange({
+    action: "admin_maintenance_change",
+    result: "success",
+    actor: params.actor,
+    target: params.bannerId,
+    targetType: MAINTENANCE_TARGET_TYPE,
+    beforeState: params.beforeState ?? null,
+    afterState: params.afterState ?? null,
+    reason: params.reason ?? null,
+    requestId: params.requestId ?? null,
+    clientIp: params.clientIp ?? null,
+  });
+}
+
+/**
+ * Query maintenance banner audit records for incident review.
+ */
+export async function queryMaintenanceAuditLogs(filters: {
+  bannerId?: string;
+  actor?: string;
+  since?: Date;
+  until?: Date;
+  limit?: number;
+  skip?: number;
+}) {
+  return queryAccessAuditLogs({
+    target: filters.bannerId,
+    targetType: MAINTENANCE_TARGET_TYPE,
+    actor: filters.actor,
+    since: filters.since,
+    until: filters.until,
+    limit: filters.limit,
+    skip: filters.skip,
+  });
 }
 
