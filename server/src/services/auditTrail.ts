@@ -165,7 +165,10 @@ export interface AuditEventParams {
  * Fire-and-forget: DB errors are caught and logged to stderr; they never
  * propagate so a storage hiccup cannot block a legitimate unlock.
  */
-export async function recordAuditEvent(params: AuditEventParams): Promise<void> {
+export async function recordAuditEvent(
+  params: AuditEventParams,
+  options: { throwOnError?: boolean } = {},
+): Promise<void> {
   const walletHash = params.walletAddress
     ? hashWalletAddress(params.walletAddress)
     : null;
@@ -242,6 +245,7 @@ export async function recordAuditEvent(params: AuditEventParams): Promise<void> 
       requestId: params.requestId ?? undefined,
       err: err instanceof Error ? err.message : String(err),
     });
+    if (options.throwOnError) throw err;
   }
 }
 
