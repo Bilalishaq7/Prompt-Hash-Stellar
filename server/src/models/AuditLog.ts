@@ -50,6 +50,7 @@ export const AUDIT_ACTIONS = [
   "permission_revoked",
   "access_granted",
   "access_revoked",
+  "entitlement_repair",
   "policy_override_created",
   "policy_override_revoked",
   "operation_recovery",
