@@ -266,35 +266,40 @@ const promptSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    // Provenance tracking fields (Issue #929)
-    // Quick-access denormalized provenance metadata for efficient queries
-    // Full provenance history is stored in ProvenanceRecord collection
-    provenanceSource: {
+    // Safe public permalinks (#936)
+    slug: {
       type: String,
-      enum: ["manual", "api", "file_upload", "migration", "external_api", "fork", "template", "ai_generated", "system"],
-      default: "manual",
-      index: true,
-    },
-    provenanceBatchId: {
-      type: String,
+      trim: true,
       index: true,
       default: null,
     },
-    provenanceActorId: {
+    previousSlugs: {
+      type: [String],
+      default: [],
+      index: true,
+    },
+    redirectsFrom: {
+      type: [String],
+      default: [],
+      index: true,
+    },
+    canonicalUrl: {
       type: String,
-      index: true,
       default: null,
     },
-    provenanceRecordId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ProvenanceRecord",
-      index: true,
+    archivedAt: {
+      type: Date,
       default: null,
+      index: true,
     },
-    hasProvenance: {
+    isDeleted: {
       type: Boolean,
       default: false,
       index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
   {
@@ -302,6 +307,9 @@ const promptSchema = new mongoose.Schema(
   },
 );
 promptSchema.index({ title: 1 });
+promptSchema.index({ slug: 1 });
+promptSchema.index({ previousSlugs: 1 });
+promptSchema.index({ redirectsFrom: 1 });
 promptSchema.index({ listingStatus: 1, isActive: 1, _id: -1 });
 promptSchema.index({ listingStatus: 1, isActive: 1, category: 1, _id: -1 });
 promptSchema.index({ listingStatus: 1, isActive: 1, owner: 1, _id: -1 });
