@@ -2907,7 +2907,7 @@ __metadata:
 
 "@prompthash/schema@file:../packages/schema::locator=prompthash-server%40workspace%3Aserver":
   version: 0.1.0
-  resolution: "@prompthash/schema@file:../packages/schema#../packages/schema::hash=55f173&locator=prompthash-server%40workspace%3Aserver"
+  resolution: "@prompthash/schema@file:../packages/schema#../packages/schema::hash=0a121e&locator=prompthash-server%40workspace%3Aserver"
   dependencies:
     zod: "npm:^4.4.3"
   checksum: 10c0/d08d36ffcdb89fed4e0ac13470c1ca7c2c0297a3d45bfb07d231d98bc854d8a8dac7da0d5968ec3ba1cc81b6e0efd70a8dd4c65f10d81b896b93706d7e6cbf19
@@ -2916,7 +2916,7 @@ __metadata:
 
 "@prompthash/schema@file:./packages/schema::locator=prompt-hash-stellar%40workspace%3A.":
   version: 0.1.0
-  resolution: "@prompthash/schema@file:./packages/schema#./packages/schema::hash=55f173&locator=prompt-hash-stellar%40workspace%3A."
+  resolution: "@prompthash/schema@file:./packages/schema#./packages/schema::hash=0a121e&locator=prompt-hash-stellar%40workspace%3A."
   dependencies:
     zod: "npm:^4.4.3"
   checksum: 10c0/d08d36ffcdb89fed4e0ac13470c1ca7c2c0297a3d45bfb07d231d98bc854d8a8dac7da0d5968ec3ba1cc81b6e0efd70a8dd4c65f10d81b896b93706d7e6cbf19
@@ -2936,7 +2936,7 @@ __metadata:
 
 "@prompthash/sdk@file:../packages/sdk::locator=prompthash-server%40workspace%3Aserver":
   version: 0.1.0
-  resolution: "@prompthash/sdk@file:../packages/sdk#../packages/sdk::hash=308587&locator=prompthash-server%40workspace%3Aserver"
+  resolution: "@prompthash/sdk@file:../packages/sdk#../packages/sdk::hash=e5f953&locator=prompthash-server%40workspace%3Aserver"
   dependencies:
     "@stellar/stellar-sdk": "npm:^17.1.0"
     libsodium-wrappers: "npm:^0.8.4"
