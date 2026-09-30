@@ -878,3 +878,29 @@ export const CheckSimilarity = async (
     });
   }
 };
+
+/**
+ * Check prompt for duplicates using canonical fields and similarity fallback.
+ */
+import { checkDuplicates } from "../services/duplicateDetection.js";
+export const CheckDuplicate = async (
+  req: Request,
+  res: Response,
+): Promise<Response<any>> => {
+  try {
+    await connectDb();
+    const { title, content, category } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: "content is required." });
+    }
+
+    const result = await checkDuplicates(title, content, category);
+    return res.json(result);
+  } catch (error) {
+    logger.error("Check duplicate error", { action: "checkDuplicate", error });
+    return res.status(500).json({
+      error: (error as Error).message || "Failed to check duplicate",
+    });
+  }
+};

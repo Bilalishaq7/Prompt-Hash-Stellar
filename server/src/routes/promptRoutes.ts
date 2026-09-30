@@ -13,6 +13,7 @@ import {
   GetPriceHistory,
   GetPromptsByContentHash,
   CheckSimilarity,
+  CheckDuplicate,
 } from "../controllers/controllers";
 import {
   GetCreatorSalesAnalytics,
@@ -81,6 +82,13 @@ promptRouter.post(
   "/similarity/check",
   enforcePolicyLimit("COMPUTE_SIMILARITY_CHECK"),
   CheckSimilarity
+);
+
+// Duplicate check
+promptRouter.post(
+  "/duplicate/check",
+  enforcePolicyLimit("COMPUTE_SIMILARITY_CHECK"),
+  CheckDuplicate
 );
 
 // Preview analytics (#257)
