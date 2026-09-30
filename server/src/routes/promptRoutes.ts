@@ -39,6 +39,13 @@ import {
 import { requireAdminScope } from "../middleware/adminAuth";
 import { reportLimiter, publishLimiter } from "../middleware/rateLimiter";
 import { enforcePolicyLimit } from "../middleware/policyLimitMiddleware";
+import {
+  ResolvePromptPermalink,
+  RenamePromptRecord,
+  ArchivePromptRecord,
+  RestorePromptRecord,
+  RestrictPromptRecord,
+} from "../controllers/permalinkControllers.js";
 
 export const promptRouter = express.Router();
 
@@ -72,6 +79,20 @@ promptRouter.get("/buyer/:walletAddress/transactions", GetPurchaseTransactions);
 promptRouter.get("/creator/:walletAddress/analytics", GetCreatorSalesAnalytics);
 promptRouter.get("/creator/:walletAddress/payout-statement", GetCreatorPayoutStatement);
 promptRouter.get("/creator/:walletAddress/drafts", GetDraftPrompts);
+
+// ── Safe Public Permalinks (#936) ───────────────────────────────────────────
+// Canonical permalink resolution, redirect handling for renamed records, and
+// safe public views for archived/restricted records.
+promptRouter.get("/permalink/:identifier", ResolvePromptPermalink);
+promptRouter.get("/resolve/:identifier", ResolvePromptPermalink);
+promptRouter.post("/:promptId/rename", RenamePromptRecord);
+promptRouter.post("/:promptId/archive-permalink", ArchivePromptRecord);
+promptRouter.post("/:promptId/restore-permalink", RestorePromptRecord);
+promptRouter.post(
+  "/:promptId/restrict-permalink",
+  requireAdminScope("moderation:write"),
+  RestrictPromptRecord
+);
 
 // Content hash lookup for duplicate detection (#333)
 promptRouter.get("/hash/:contentHash", GetPromptsByContentHash);
