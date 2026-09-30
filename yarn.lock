@@ -2907,19 +2907,19 @@ __metadata:
 
 "@prompthash/schema@file:../packages/schema::locator=prompthash-server%40workspace%3Aserver":
   version: 0.1.0
-  resolution: "@prompthash/schema@file:../packages/schema#../packages/schema::hash=4d87c2&locator=prompthash-server%40workspace%3Aserver"
+  resolution: "@prompthash/schema@file:../packages/schema#../packages/schema::hash=55f173&locator=prompthash-server%40workspace%3Aserver"
   dependencies:
     zod: "npm:^4.4.3"
-  checksum: 10c0/e45c0fa4db4e19d028b6c49b180bd9cd79da74ca587855455364deec7c0b9fb1ff1503d62a713521732c470d55aa25cc8b47a7ea2e55cfe28f04e4c3ded17412
+  checksum: 10c0/d08d36ffcdb89fed4e0ac13470c1ca7c2c0297a3d45bfb07d231d98bc854d8a8dac7da0d5968ec3ba1cc81b6e0efd70a8dd4c65f10d81b896b93706d7e6cbf19
   languageName: node
   linkType: hard
 
 "@prompthash/schema@file:./packages/schema::locator=prompt-hash-stellar%40workspace%3A.":
   version: 0.1.0
-  resolution: "@prompthash/schema@file:./packages/schema#./packages/schema::hash=4d87c2&locator=prompt-hash-stellar%40workspace%3A."
+  resolution: "@prompthash/schema@file:./packages/schema#./packages/schema::hash=55f173&locator=prompt-hash-stellar%40workspace%3A."
   dependencies:
     zod: "npm:^4.4.3"
-  checksum: 10c0/e45c0fa4db4e19d028b6c49b180bd9cd79da74ca587855455364deec7c0b9fb1ff1503d62a713521732c470d55aa25cc8b47a7ea2e55cfe28f04e4c3ded17412
+  checksum: 10c0/d08d36ffcdb89fed4e0ac13470c1ca7c2c0297a3d45bfb07d231d98bc854d8a8dac7da0d5968ec3ba1cc81b6e0efd70a8dd4c65f10d81b896b93706d7e6cbf19
   languageName: node
   linkType: hard
 
@@ -2936,11 +2936,11 @@ __metadata:
 
 "@prompthash/sdk@file:../packages/sdk::locator=prompthash-server%40workspace%3Aserver":
   version: 0.1.0
-  resolution: "@prompthash/sdk@file:../packages/sdk#../packages/sdk::hash=5099db&locator=prompthash-server%40workspace%3Aserver"
+  resolution: "@prompthash/sdk@file:../packages/sdk#../packages/sdk::hash=308587&locator=prompthash-server%40workspace%3Aserver"
   dependencies:
     "@stellar/stellar-sdk": "npm:^17.1.0"
     libsodium-wrappers: "npm:^0.8.4"
-  checksum: 10c0/abdf6d4ebd04a560c16a13d3bfce557eb57ee9574cbeb02b41eaf49b02024ed63eb7ad70f9e42cb9ec36dd30bbed2bc643a4fed47f94766faa6ba31a504c2da1
+  checksum: 10c0/4222296e4774081210f5c95d43e915d95a2fb2e07bd44f14182a692f6fd60816cb66f95e0d8ea27f6d46a385c1de3585199244d128122c98a35b38674c907fdc
   languageName: node
   linkType: hard
 
