@@ -23,6 +23,8 @@ export const AUDIT_ACTIONS = [
   "admin_auth_success",
   "admin_auth_denied",
   "audit_export",
+  "audit_sensitive_field_access",
+  "audit_sensitive_field_denied",
   // moderation (api/prompts/moderate.ts)
   "prompt_restrict",
   "prompt_reinstate",
@@ -50,6 +52,7 @@ export const AUDIT_ACTIONS = [
   "permission_revoked",
   "access_granted",
   "access_revoked",
+  "entitlement_repair",
   "policy_override_created",
   "policy_override_revoked",
   "operation_recovery",

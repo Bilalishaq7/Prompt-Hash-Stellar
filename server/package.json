@@ -23,6 +23,7 @@
     "db:migrate": "ts-node src/db/migrateCli.ts up",
     "db:rollback": "ts-node src/db/rollbackCli.ts",
     "retention:enqueue": "ts-node scripts/enqueueRetentionCleanup.ts",
+    "repair:entitlement": "ts-node scripts/repairEntitlement.ts",
     "data:integrity:monitor": "ts-node scripts/dataIntegrityMonitor.ts"
   },
   "files": [

@@ -1,17 +1,19 @@
 import { Router, Request, Response } from "express";
 import connectDb from "../db/connectDb";
 import { authLimiter } from "../middleware/rateLimiter";
-import { requireAdminScope, AdminRequest } from "../middleware/adminAuth";
+import { requireAdminScope, type AdminRequest } from "../middleware/adminAuth";
+import { requireIdempotency } from "../middleware/idempotency";
 import {
   runUserExport,
   listUserExports,
   cleanupExpiredExports,
   verifyExportChecksum,
   EXPORT_SCOPES,
+  type ExportScope,
 } from "../services/exportService";
-import ExportRecord from "../models/ExportRecord";
+import { ExportRecord } from "../models/ExportRecord";
 
-const exportRouter = Router();
+export const exportRouter = Router();
 
 /**
  * User data export endpoints.
@@ -29,7 +31,7 @@ const exportRouter = Router();
 exportRouter.get(
   "/",
   authLimiter,
-  async (req: Request, res: Response) => {
+  async (req: AdminRequest, res: Response) => {
     try {
       await connectDb();
 
@@ -71,7 +73,8 @@ exportRouter.get(
 exportRouter.post(
   "/",
   authLimiter,
-  async (req: Request, res: Response) => {
+  requireIdempotency,
+  async (req: AdminRequest, res: Response) => {
     try {
       await connectDb();
 
@@ -139,7 +142,7 @@ exportRouter.post(
 exportRouter.get(
   "/:exportId",
   authLimiter,
-  async (req: Request, res: Response) => {
+  async (req: AdminRequest, res: Response) => {
     try {
       await connectDb();
 

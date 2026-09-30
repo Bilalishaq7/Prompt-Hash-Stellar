@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { requireAdminScope } from "../middleware/adminAuth";
+import { requireIdempotency } from "../middleware/idempotency";
 import {
   OperationRecoveryService,
   DEFAULT_STUCK_THRESHOLD_MINUTES,
@@ -62,7 +63,7 @@ operationRecoveryRouter.get("/:operationId", async (req: Request, res: Response)
  * POST /api/recovery/:operationId/retry
  * User-initiated retry for a stuck or recoverable operation.
  */
-operationRecoveryRouter.post("/:operationId/retry", async (req: Request, res: Response) => {
+operationRecoveryRouter.post("/:operationId/retry", requireIdempotency, async (req: Request, res: Response) => {
   const { operationId } = req.params;
   const userWallet =
     (req.headers["x-wallet-address"] as string) ||
@@ -97,6 +98,7 @@ operationRecoveryRouter.post("/:operationId/retry", async (req: Request, res: Re
 operationRecoveryRouter.post(
   "/:operationId/resolve",
   requireAdminScope("support:write"),
+  requireIdempotency,
   async (req: Request, res: Response) => {
     const { operationId } = req.params;
     const { action, reason } = req.body;

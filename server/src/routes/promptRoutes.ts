@@ -40,6 +40,7 @@ import {
 import { requireAdminScope } from "../middleware/adminAuth";
 import { reportLimiter, publishLimiter } from "../middleware/rateLimiter";
 import { enforcePolicyLimit } from "../middleware/policyLimitMiddleware";
+import { requireIdempotency } from "../middleware/idempotency";
 
 export const promptRouter = express.Router();
 
@@ -73,6 +74,20 @@ promptRouter.get("/buyer/:walletAddress/transactions", GetPurchaseTransactions);
 promptRouter.get("/creator/:walletAddress/analytics", GetCreatorSalesAnalytics);
 promptRouter.get("/creator/:walletAddress/payout-statement", GetCreatorPayoutStatement);
 promptRouter.get("/creator/:walletAddress/drafts", GetDraftPrompts);
+
+// ── Safe Public Permalinks (#936) ───────────────────────────────────────────
+// Canonical permalink resolution, redirect handling for renamed records, and
+// safe public views for archived/restricted records.
+promptRouter.get("/permalink/:identifier", ResolvePromptPermalink);
+promptRouter.get("/resolve/:identifier", ResolvePromptPermalink);
+promptRouter.post("/:promptId/rename", RenamePromptRecord);
+promptRouter.post("/:promptId/archive-permalink", ArchivePromptRecord);
+promptRouter.post("/:promptId/restore-permalink", RestorePromptRecord);
+promptRouter.post(
+  "/:promptId/restrict-permalink",
+  requireAdminScope("moderation:write"),
+  RestrictPromptRecord
+);
 
 // Content hash lookup for duplicate detection (#333)
 promptRouter.get("/hash/:contentHash", GetPromptsByContentHash);
@@ -138,7 +153,7 @@ promptRouter.post(
 // wallet-scoped (private); the dispute view is admin-only for reviewers.
 promptRouter.get("/licensing/templates", GetLicenseTemplates);
 promptRouter.get("/:promptId/license", GetPromptLicense);
-promptRouter.post("/licensing/update", UpdatePromptLicense);
+promptRouter.post("/licensing/update", requireIdempotency, UpdatePromptLicense);
 promptRouter.get(
   "/buyer/:walletAddress/receipts/:promptId",
   GetPurchaseReceipt,
@@ -155,10 +170,10 @@ promptRouter.get(
 // and the recipient approves or rejects it. Approval re-points the indexed
 // Prompt.owner (affects analytics/payout attribution). Both actions require a
 // wallet signature. See docs/architecture.md before extending this surface.
-promptRouter.post("/transfers/request", RequestOwnershipTransfer);
+promptRouter.post("/transfers/request", requireIdempotency, RequestOwnershipTransfer);
 promptRouter.get("/transfers/:walletAddress", GetOwnershipTransfers);
-promptRouter.post("/transfers/:transferId/respond", RespondOwnershipTransfer);
-promptRouter.post("/transfers/:transferId/cancel", CancelOwnershipTransfer);
+promptRouter.post("/transfers/:transferId/respond", requireIdempotency, RespondOwnershipTransfer);
+promptRouter.post("/transfers/:transferId/cancel", requireIdempotency, CancelOwnershipTransfer);
 
 // ── User Preference (non-authoritative, wallet-signature required) ────────────
 promptRouter.post("/buyer/save", SavePrompt);
