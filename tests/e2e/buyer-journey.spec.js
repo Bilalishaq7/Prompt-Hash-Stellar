@@ -6,7 +6,7 @@
  * live network, set PUBLIC_STELLAR_RPC_URL etc. and set E2E_LIVE=1 (not used here).
  */
 import { test, expect } from '@playwright/test';
-import { mockUnlockSuccess, mockUnlockFailure, attachActionableLogging } from '../helpers/mockServer.js';
+import { mockChallenge, mockUnlockSuccess, mockUnlockFailure, attachActionableLogging } from '../helpers/mockServer.js';
 
 const BUYER_ADDRESS = 'GBUYERTESTACCOUNT1234567890ABCDEFGH1234567890ABCDEFGH1234';
 
@@ -147,6 +147,29 @@ test.describe('Buyer path E2E — settlement → entitlement → unlock', () => 
       return r.json();
     });
     expect(body.code).toBe('INVALID_SIGNATURE');
+  });
+
+  test('malformed unlock request is rejected with actionable validation code', async ({ page }) => {
+    await injectWallet(page, BUYER_ADDRESS);
+    await mockChallenge(page, {
+      status: 400,
+      code: 'INVALID_REQUEST',
+      error: 'Address and promptId are required.',
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const response = await page.evaluate(async () => {
+      const r = await fetch('/api/auth/challenge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: '', promptId: '' }),
+      });
+      return { ok: r.ok, body: await r.json() };
+    });
+
+    expect(response.ok).toBe(false);
+    expect(response.body.code).toBe('INVALID_REQUEST');
+    expect(response.body.error).toMatch(/required/i);
   });
 
   test('transient network failure is retryable; second attempt succeeds (idempotent)', async ({ page }) => {
